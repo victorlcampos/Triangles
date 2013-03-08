@@ -139,11 +139,15 @@ public class Canvas extends JPanel {
 	private void drawLinePoint(Point point1, Point point2, Point firstPoint, Graphics g, int x,
 			int y, double fullDist, Boolean wireframe) {
 		double dist;
-		double percent_color1;
+		double percent_color2;
 		dist = point1.dist(new Point(x, y, null));
-		percent_color1 = (1 - dist/fullDist);
+		percent_color2 = dist/fullDist;
 		
-		Point point = new Point(x, y, new Color((int) Math.round(point1.getColor().getRGB()*percent_color1 + point2.getColor().getRGB()*(1 - percent_color1))));		
+		float red = new Float((point1.getColor().getRed()*(1-percent_color2)+point2.getColor().getRed()*percent_color2)/255);
+		float green = new Float((point1.getColor().getGreen()*(1-percent_color2)+point2.getColor().getGreen()*percent_color2)/255);
+		float blue = new Float((point1.getColor().getBlue()*(1-percent_color2)+point2.getColor().getBlue()*percent_color2)/255);
+		Color color = new Color(red, green, blue);
+		Point point = new Point(x, y, color);		
 		if (wireframe) {
 			g.setColor(Color.BLACK);
 		}else{
