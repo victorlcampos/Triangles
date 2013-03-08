@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import model.Point;
 
+
 public class Canvas extends JPanel {
 	private List<Point> points = new ArrayList<Point>();
 	private Color color;
