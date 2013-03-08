@@ -12,14 +12,23 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import java.awt.FlowLayout;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class Window {
 
 	private JFrame frame;
 	public static JButton btnSelecionarCor;
 	public final static Canvas canvas = new Canvas();
+	private JTextField textField;
 	/**
 	 * Launch the application.
 	 */
@@ -48,17 +57,14 @@ public class Window {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 607, 498);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		
 		canvas.setBackground(Color.WHITE);
-		
-		frame.getContentPane().add(canvas, BorderLayout.CENTER);		
 		canvas.setLayout(null);
 		
 		JPanel panel = new JPanel();
-		frame.getContentPane().add(panel, BorderLayout.NORTH);
 		
 		JButton btnLimparCanvas = new JButton("Limpar Canvas");
 		btnLimparCanvas.addActionListener(new ActionListener() {
@@ -67,10 +73,8 @@ public class Window {
 				canvas.repaint();
 			}
 		});
-		panel.add(btnLimparCanvas);
 		
 		btnSelecionarCor = new JButton("Selecionar cor");
-		panel.add(btnSelecionarCor);
 		
 		JComboBox comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Rasteriza\u00E7\u00E3o", "Wireframe", "Ambos"}));
@@ -96,7 +100,75 @@ public class Window {
 				canvas.repaint();
 			}
 		});
-		panel.add(comboBox);
+		
+		JLabel lblNewLabel = new JLabel("# Lados\n");
+		
+		textField = new JTextField();
+		textField.setText("3");
+		textField.setColumns(10);
+		textField.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent arg0) {
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				canvas.setNumEdges(new Integer(textField.getText()));
+				canvas.repaint();
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {			
+			}
+		});
+		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 607, GroupLayout.PREFERRED_SIZE)
+						.addComponent(canvas, GroupLayout.PREFERRED_SIZE, 607, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 126, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(canvas, GroupLayout.PREFERRED_SIZE, 344, GroupLayout.PREFERRED_SIZE)
+					.addGap(44))
+		);
+		GroupLayout gl_panel = new GroupLayout(panel);
+		gl_panel.setHorizontalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addGap(5)
+					.addComponent(btnLimparCanvas, GroupLayout.PREFERRED_SIZE, 123, GroupLayout.PREFERRED_SIZE)
+					.addGap(5)
+					.addComponent(btnSelecionarCor)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(6)
+					.addComponent(lblNewLabel)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textField, GroupLayout.PREFERRED_SIZE, 57, GroupLayout.PREFERRED_SIZE)
+					.addGap(79))
+		);
+		gl_panel.setVerticalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addGap(5)
+					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnLimparCanvas)
+						.addComponent(btnSelecionarCor)
+						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblNewLabel)
+						.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(92))
+		);
+		panel.setLayout(gl_panel);
+		frame.getContentPane().setLayout(groupLayout);
 		btnSelecionarCor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SwingColorChooserDemo.createAndShowGUI();

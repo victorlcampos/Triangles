@@ -16,6 +16,7 @@ public class Canvas extends JPanel {
 	private Color color;
 	private Boolean wireframe = false;
 	private Boolean rasterization = true;
+	private Integer numEdges = 3;
 
 	public Canvas() {
 		color = Color.black;
@@ -30,29 +31,37 @@ public class Canvas extends JPanel {
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		List<Point> triangle = new ArrayList<Point>();
+		List<Point> polygon = new ArrayList<Point>();
 		Point point1, point2;
 		for (int i = 0; i < points.size(); i++) {
-			triangle.add(points.get(i));
-			if (i % 3 == 2) {
-				for (int j = 0; j < 3; j++) {
-					point1 = triangle.get(j);
-					point2 = triangle.get((j + 1) % 3);
+			polygon.add(points.get(i));
+			if (i % numEdges == (numEdges - 1)) {
+				for (int j = 0; j < numEdges; j++) {
+					point1 = polygon.get(j);
+					point2 = polygon.get((j + 1) % numEdges);
 					if (rasterization) {
-						drawLine(point1, point2, triangle.get(0), g, false);
+						drawLine(point1, point2, polygon.get(0), g, false);
 					}
 					if (wireframe) {
-						drawLine(point1, point2, triangle.get(0), g, true);
+						drawLine(point1, point2, polygon.get(0), g, true);
 					}					
 				}
-				triangle.clear();
+				polygon.clear();
 			}
 		}
 
-		for (Point point : triangle) {
+		for (Point point : polygon) {
 			g.setColor(point.getColor());
 			g.drawRect(point.getX(), point.getY(), 1, 1);
 		}
+	}
+
+	public Integer getNumEdges() {
+		return numEdges;
+	}
+
+	public void setNumEdges(Integer numEdges) {
+		this.numEdges = numEdges;
 	}
 
 	private void drawLine(Point point1, Point point2, Point firstPoint, Graphics g, Boolean wireframe) {
