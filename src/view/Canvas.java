@@ -15,6 +15,7 @@ public class Canvas extends JPanel {
 	private List<Point> points = new ArrayList<Point>();
 	private Color color;
 	private Boolean wireframe = false;
+	private Boolean rasterization = true;
 
 	public Canvas() {
 		color = Color.black;
@@ -37,7 +38,12 @@ public class Canvas extends JPanel {
 				for (int j = 0; j < 3; j++) {
 					point1 = triangle.get(j);
 					point2 = triangle.get((j + 1) % 3);
-					drawLine(point1, point2, triangle.get(0), g);
+					if (rasterization) {
+						drawLine(point1, point2, triangle.get(0), g, false);
+					}
+					if (wireframe) {
+						drawLine(point1, point2, triangle.get(0), g, true);
+					}					
 				}
 				triangle.clear();
 			}
@@ -49,7 +55,7 @@ public class Canvas extends JPanel {
 		}
 	}
 
-	private void drawLine(Point point1, Point point2, Point firstPoint, Graphics g) {
+	private void drawLine(Point point1, Point point2, Point firstPoint, Graphics g, Boolean wireframe) {
 		int x, y, erro, deltaX, deltaY;
 		erro = 0;
 		int x1 = point1.getX();
@@ -76,12 +82,12 @@ public class Canvas extends JPanel {
 				for (int i = 1; i < Math.abs(deltaX); i++) {
 					if (erro < 0) {
 						x++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
 						erro += deltaY;
 					} else {
 						x++;
 						y++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
 						erro += deltaY - deltaX;
 					}
 				}
@@ -90,11 +96,11 @@ public class Canvas extends JPanel {
 					if (erro < 0) {
 						x++;
 						y++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
 						erro += deltaY - deltaX;
 					} else {
 						y++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
 						erro -= deltaX;
 					}
 				}
@@ -104,12 +110,12 @@ public class Canvas extends JPanel {
 				for (int i = 1; i < Math.abs(deltaX); i++) {
 					if (erro < 0) {
 						x--;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
 						erro += deltaY;
 					} else {
 						x--;
 						y++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
 						erro += deltaY + deltaX;
 					}
 				}
@@ -118,11 +124,11 @@ public class Canvas extends JPanel {
 					if (erro < 0) {
 						x--;
 						y++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
 						erro += deltaY + deltaX;
 					} else {
 						y++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
 						erro += deltaX;
 					}
 				}
@@ -131,18 +137,23 @@ public class Canvas extends JPanel {
 	}
 
 	private void drawLinePoint(Point point1, Point point2, Point firstPoint, Graphics g, int x,
-			int y, double fullDist) {
+			int y, double fullDist, Boolean wireframe) {
 		double dist;
 		double percent_color1;
 		dist = point1.dist(new Point(x, y, null));
 		percent_color1 = (1 - dist/fullDist);
 		
 		Point point = new Point(x, y, new Color((int) Math.round(point1.getColor().getRGB()*percent_color1 + point2.getColor().getRGB()*(1 - percent_color1))));		
-		g.setColor(point.getColor());
+		if (wireframe) {
+			g.setColor(Color.BLACK);
+		}else{
+			g.setColor(point.getColor());
+		}		
+		
 		g.drawRect(x, y, 1, 1);
 		
 		if (!wireframe && !point1.equals(firstPoint)) {			
-			drawLine(firstPoint, point, firstPoint, g);
+			drawLine(firstPoint, point, firstPoint, g, false);
 		}
 	}
 
@@ -168,5 +179,13 @@ public class Canvas extends JPanel {
 
 	public void setWireframe(Boolean wireframe) {
 		this.wireframe = wireframe;
+	}
+
+	public Boolean getRasterization() {
+		return rasterization;
+	}
+
+	public void setRasterization(Boolean rasterization) {
+		this.rasterization = rasterization;
 	}
 }

@@ -12,6 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class Window {
 
@@ -70,15 +72,31 @@ public class Window {
 		btnSelecionarCor = new JButton("Selecionar cor");
 		panel.add(btnSelecionarCor);
 		
-		JRadioButton rdbtnWireframe = new JRadioButton("wireframe");
-		rdbtnWireframe.addChangeListener(new ChangeListener() {			
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Rasteriza\u00E7\u00E3o", "Wireframe", "Ambos"}));
+		comboBox.addActionListener(new ActionListener() {			
 			@Override
-			public void stateChanged(ChangeEvent e) {				
-				canvas.setWireframe(((JRadioButton) e.getSource()).isSelected());
+			public void actionPerformed(ActionEvent arg0) {
+				JComboBox comboBox = (JComboBox) arg0.getSource();
+				
+				switch (comboBox.getSelectedIndex()) {
+				case 0:
+					canvas.setWireframe(false);
+					canvas.setRasterization(true);
+					break;
+				case 1:
+					canvas.setWireframe(true);
+					canvas.setRasterization(false);
+					break;
+				case 2:
+					canvas.setWireframe(true);
+					canvas.setRasterization(true);
+					break;				
+				}
 				canvas.repaint();
 			}
 		});
-		panel.add(rdbtnWireframe);
+		panel.add(comboBox);
 		btnSelecionarCor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SwingColorChooserDemo.createAndShowGUI();
