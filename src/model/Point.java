@@ -2,7 +2,7 @@ package model;
 
 import java.awt.Color;
 
-public class Point {
+public class Point{
 	private int x, y;
 	private Color color;
 	
@@ -10,6 +10,10 @@ public class Point {
 		this.setX(x);
 		this.setY(y);
 		this.setColor(color);
+	}
+	
+	public double dist(Point p) {		
+		return Math.sqrt(Math.pow((x-p.getX()), 2) + Math.pow((y-p.getY()), 2));
 	}
 
 	public int getX() {
