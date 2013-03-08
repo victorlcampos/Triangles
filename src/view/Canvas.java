@@ -14,6 +14,7 @@ import model.Point;
 public class Canvas extends JPanel {
 	private List<Point> points = new ArrayList<Point>();
 	private Color color;
+	private Boolean wireframe = false;
 
 	public Canvas() {
 		color = Color.black;
@@ -138,8 +139,9 @@ public class Canvas extends JPanel {
 		
 		Point point = new Point(x, y, new Color((int) Math.round(point1.getColor().getRGB()*percent_color1 + point2.getColor().getRGB()*(1 - percent_color1))));		
 		g.setColor(point.getColor());
-		g.drawRect(x, y, 1, 1);		
-		if (!point1.equals(firstPoint)) {			
+		g.drawRect(x, y, 1, 1);
+		
+		if (!wireframe && !point1.equals(firstPoint)) {			
 			drawLine(firstPoint, point, firstPoint, g);
 		}
 	}
@@ -158,5 +160,13 @@ public class Canvas extends JPanel {
 
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+	public Boolean getWireframe() {
+		return wireframe;
+	}
+
+	public void setWireframe(Boolean wireframe) {
+		this.wireframe = wireframe;
 	}
 }
