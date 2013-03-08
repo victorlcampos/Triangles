@@ -36,7 +36,7 @@ public class Canvas extends JPanel {
 				for (int j = 0; j < 3; j++) {
 					point1 = triangle.get(j);
 					point2 = triangle.get((j + 1) % 3);
-					drawLine(point1, point2, g);
+					drawLine(point1, point2, triangle.get(0), g);
 				}
 				triangle.clear();
 			}
@@ -48,7 +48,7 @@ public class Canvas extends JPanel {
 		}
 	}
 
-	private void drawLine(Point point1, Point point2, Graphics g) {
+	private void drawLine(Point point1, Point point2, Point firstPoint, Graphics g) {
 		int x, y, erro, deltaX, deltaY;
 		erro = 0;
 		int x1 = point1.getX();
@@ -75,12 +75,12 @@ public class Canvas extends JPanel {
 				for (int i = 1; i < Math.abs(deltaX); i++) {
 					if (erro < 0) {
 						x++;
-						drawLinePoint(point1, point2, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
 						erro += deltaY;
 					} else {
 						x++;
 						y++;
-						drawLinePoint(point1, point2, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
 						erro += deltaY - deltaX;
 					}
 				}
@@ -89,11 +89,11 @@ public class Canvas extends JPanel {
 					if (erro < 0) {
 						x++;
 						y++;
-						g.drawRect(x, y, 1, 1);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
 						erro += deltaY - deltaX;
 					} else {
 						y++;
-						drawLinePoint(point1, point2, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
 						erro -= deltaX;
 					}
 				}
@@ -103,12 +103,12 @@ public class Canvas extends JPanel {
 				for (int i = 1; i < Math.abs(deltaX); i++) {
 					if (erro < 0) {
 						x--;
-						g.drawRect(x, y, 1, 1);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
 						erro += deltaY;
 					} else {
 						x--;
 						y++;
-						drawLinePoint(point1, point2, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
 						erro += deltaY + deltaX;
 					}
 				}
@@ -117,11 +117,11 @@ public class Canvas extends JPanel {
 					if (erro < 0) {
 						x--;
 						y++;
-						drawLinePoint(point1, point2, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
 						erro += deltaY + deltaX;
 					} else {
 						y++;
-						drawLinePoint(point1, point2, g, x, y, fullDist);
+						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist);
 						erro += deltaX;
 					}
 				}
@@ -129,14 +129,19 @@ public class Canvas extends JPanel {
 		}
 	}
 
-	private void drawLinePoint(Point point1, Point point2, Graphics g, int x,
+	private void drawLinePoint(Point point1, Point point2, Point firstPoint, Graphics g, int x,
 			int y, double fullDist) {
 		double dist;
 		double percent_color1;
 		dist = point1.dist(new Point(x, y, null));
 		percent_color1 = (1 - dist/fullDist);
-		g.setColor(new Color((int) Math.round(point1.getColor().getRGB()*percent_color1 + point2.getColor().getRGB()*(1 - percent_color1))));
-		g.drawRect(x, y, 1, 1);
+		
+		Point point = new Point(x, y, new Color((int) Math.round(point1.getColor().getRGB()*percent_color1 + point2.getColor().getRGB()*(1 - percent_color1))));		
+		g.setColor(point.getColor());
+		g.drawRect(x, y, 1, 1);		
+		if (!point1.equals(firstPoint)) {			
+			drawLine(firstPoint, point, firstPoint, g);
+		}
 	}
 
 	public List<Point> getPoints() {
