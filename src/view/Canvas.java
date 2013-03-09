@@ -11,8 +11,9 @@ import javax.swing.JPanel;
 
 import model.Point;
 
-
+@SuppressWarnings("serial")
 public class Canvas extends JPanel {
+	
 	private List<Point> points = new ArrayList<Point>();
 	private Color color;
 	private Boolean wireframe = false;
@@ -24,12 +25,14 @@ public class Canvas extends JPanel {
 
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				points.add(new Point(e.getX(), e.getY(), color));
+				Point point = new Point(e.getX(), e.getY(), color);
+				System.out.println(point);
+				points.add(point);
 				repaint();
 			}
 		});
 	}
-
+	
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		List<Point> polygon = new ArrayList<Point>();
