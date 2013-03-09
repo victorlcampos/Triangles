@@ -10,14 +10,16 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import model.Point;
+import model.Wireframe;
 
 @SuppressWarnings("serial")
 public class Canvas extends JPanel {
 	
 	private List<Point> points = new ArrayList<Point>();
 	private Color color;
-	private Boolean wireframe = false;
-	private Boolean rasterization = true;
+	private Wireframe wireframe = Wireframe.getDefaultType();
+	private Boolean wireframeEnable = false;
+	private Boolean rasterizationEnable = true;
 	private Integer numEdges = 3;
 
 	public Canvas() {
@@ -43,10 +45,10 @@ public class Canvas extends JPanel {
 				for (int j = 0; j < numEdges; j++) {
 					point1 = polygon.get(j);
 					point2 = polygon.get((j + 1) % numEdges);
-					if (rasterization) {
+					if (rasterizationEnable) {
 						drawLine(point1, point2, polygon.get(0), g, false);
 					}
-					if (wireframe) {
+					if (wireframeEnable) {
 						drawLine(point1, point2, polygon.get(0), g, true);
 					}					
 				}
@@ -149,8 +151,9 @@ public class Canvas extends JPanel {
 		}
 	}
 
-	private void drawLinePoint(Point point1, Point point2, Point firstPoint, Graphics g, int x,
-			int y, double fullDist, Boolean wireframe) {
+	private void drawLinePoint(Point point1, Point point2, Point firstPoint, Graphics g, int x, int y, double fullDist, Boolean wireframe) {
+		if (wireframe && !this.wireframe.shouldDraw()) return;
+		
 		double dist;
 		double percent_color2;
 		dist = point1.dist(new Point(x, y, null));
@@ -190,19 +193,23 @@ public class Canvas extends JPanel {
 		this.color = color;
 	}
 
-	public Boolean getWireframe() {
-		return wireframe;
+	public Boolean isWireframeEnable() {
+		return wireframeEnable;
 	}
 
-	public void setWireframe(Boolean wireframe) {
+	public void setWireframeEnable(Boolean wireframe) {
+		this.wireframeEnable = wireframe;
+	}
+
+	public void setWireframe(Wireframe wireframe) {
 		this.wireframe = wireframe;
 	}
-
-	public Boolean getRasterization() {
-		return rasterization;
+	
+	public Boolean isRasterizationEnable() {
+		return rasterizationEnable;
 	}
 
-	public void setRasterization(Boolean rasterization) {
-		this.rasterization = rasterization;
+	public void setRasterizationEnable(Boolean rasterization) {
+		this.rasterizationEnable = rasterization;
 	}
 }

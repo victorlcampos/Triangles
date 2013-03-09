@@ -22,10 +22,7 @@ public class GlobalController {
 	
 	public void loadMeshFromFile(String filename) throws Exception {
 		BufferedReader reader = new BufferedReader(new FileReader(filename));
-		String line = reader.readLine();
-		int numEdges = Integer.valueOf(line);
-		Window.clearCanvas();
-		Window.setNumEdges(numEdges);
+		String line;
 		Point point;
 		String[] split;
 		int count = 0, x = 0, y = 0, rgb = 0;
@@ -48,10 +45,6 @@ public class GlobalController {
 			Window.canvas.getPoints().add(point);
 		}
 		reader.close();
-		if (count % numEdges != 0) {
-			Window.canvas.getPoints().clear();
-			throw new IllegalStateException("Quantidade de pontos não compatível com o número de vértices.");
-		}
 		Window.canvas.repaint();
 	}
 	
