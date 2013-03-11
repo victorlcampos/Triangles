@@ -2,7 +2,9 @@ package controller;
 
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 
 import model.Point;
 import view.Window;
@@ -46,6 +48,14 @@ public class GlobalController {
 		}
 		reader.close();
 		Window.canvas.repaint();
+	}
+	
+	public void saveMeshInFile() throws Exception {
+		BufferedWriter writter = new BufferedWriter(new FileWriter("mesh.txt"));		
+		for (Point point : Window.canvas.getPoints()) {
+			writter.write(point.getX()+" "+point.getY()+" "+point.getColor().getRGB()+"\n");
+		}
+		writter.close();
 	}
 	
 }

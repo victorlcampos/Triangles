@@ -121,6 +121,18 @@ public class Window {
 				canvas.repaint();
 			}
 		});
+		
+		JButton btnSalvarArquivo = new JButton("Salvar Arquivo");
+		btnSalvarArquivo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					GlobalController.getInstance().saveMeshInFile();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		panel.add(btnSalvarArquivo);
 		panel.add(btnLimparCanvas);
 		panel.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{btnSelecionarCor, btnLoadFile, btnLimparCanvas}));
 		btnSelecionarCor.addActionListener(new ActionListener() {
