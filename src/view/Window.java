@@ -39,6 +39,10 @@ public class Window {
 	public static JButton btnSelecionarCor;
 	public static JTextField txtFieldNumEdges;
 	public static Canvas canvas = new Canvas();
+	private static JTextField tfRotation;
+	private static JTextField tfTranslateX;
+	private static JTextField tfTranslateY;
+	private static JTextField tfScale;
 
 	/**
 	 * Launch the application.
@@ -66,9 +70,9 @@ public class Window {
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{593, 0};
-		gridBagLayout.rowHeights = new int[]{35, 29, 148, 0};
+		gridBagLayout.rowHeights = new int[]{35, 0, 29, 148, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 2.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 0.0, 2.0, Double.MIN_VALUE};
 		mainFrame.getContentPane().setLayout(gridBagLayout);
 		
 		JPanel panel = new JPanel();
@@ -141,6 +145,66 @@ public class Window {
 			}
 		});
 		
+		JPanel panel_2 = new JPanel();
+		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
+		gbc_panel_2.insets = new Insets(0, 0, 5, 0);
+		gbc_panel_2.fill = GridBagConstraints.BOTH;
+		gbc_panel_2.gridx = 0;
+		gbc_panel_2.gridy = 1;
+		mainFrame.getContentPane().add(panel_2, gbc_panel_2);
+		
+		JButton btnTransladar = new JButton("Transladar X");
+		btnTransladar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				canvas.transalteX(new Integer(tfTranslateX.getText()));
+			}
+		});
+		panel_2.add(btnTransladar);
+		
+		tfTranslateX = new JTextField();
+		tfTranslateX.setText("10");
+		panel_2.add(tfTranslateX);
+		tfTranslateX.setColumns(10);
+		
+		JButton btnTransladarY = new JButton("Transladar Y");
+		btnTransladarY.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				canvas.transalteY(new Integer(tfTranslateY.getText()));
+			}
+		});
+		panel_2.add(btnTransladarY);
+		
+		tfTranslateY = new JTextField();
+		tfTranslateY.setText("10");
+		panel_2.add(tfTranslateY);
+		tfTranslateY.setColumns(10);
+		
+		JButton btnRotacionar = new JButton("Rotacionar");
+		btnRotacionar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				canvas.rotation(new Double(tfRotation.getText()));
+			}
+		});
+		panel_2.add(btnRotacionar);
+		
+		tfRotation = new JTextField();
+		tfRotation.setText("90\n");
+		panel_2.add(tfRotation);
+		tfRotation.setColumns(10);
+		
+		JButton btnEscala = new JButton("Escala");
+		btnEscala.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				canvas.scale(new Integer(tfScale.getText()));
+			}
+		});
+		panel_2.add(btnEscala);
+		
+		tfScale = new JTextField();
+		tfScale.setText("2");
+		panel_2.add(tfScale);
+		tfScale.setColumns(10);
+		
 		JPanel panel_1 = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
 		flowLayout.setHgap(10);
@@ -149,7 +213,7 @@ public class Window {
 		gbc_panel_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panel_1.insets = new Insets(0, 0, 5, 0);
 		gbc_panel_1.gridx = 0;
-		gbc_panel_1.gridy = 1;
+		gbc_panel_1.gridy = 2;
 		mainFrame.getContentPane().add(panel_1, gbc_panel_1);
 		
 		JLabel lblNewLabel = new JLabel("#Vértices:");
@@ -217,7 +281,7 @@ public class Window {
 		GridBagConstraints gbc_canvas = new GridBagConstraints();
 		gbc_canvas.fill = GridBagConstraints.BOTH;
 		gbc_canvas.gridx = 0;
-		gbc_canvas.gridy = 2;
+		gbc_canvas.gridy = 3;
 		mainFrame.getContentPane().add(canvas, gbc_canvas);
 	}
 	

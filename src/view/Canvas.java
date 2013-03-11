@@ -14,7 +14,7 @@ import model.Wireframe;
 
 @SuppressWarnings("serial")
 public class Canvas extends JPanel {
-	
+
 	private List<Point> points = new ArrayList<Point>();
 	private Color color;
 	private Wireframe wireframe = Wireframe.getDefaultType();
@@ -28,13 +28,12 @@ public class Canvas extends JPanel {
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				Point point = new Point(e.getX(), e.getY(), color);
-				System.out.println(point);
 				points.add(point);
 				repaint();
 			}
 		});
 	}
-	
+
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		List<Point> polygon = new ArrayList<Point>();
@@ -50,7 +49,7 @@ public class Canvas extends JPanel {
 					}
 					if (wireframeEnable) {
 						drawLine(point1, point2, polygon.get(0), g, true);
-					}					
+					}
 				}
 				polygon.clear();
 			}
@@ -70,14 +69,15 @@ public class Canvas extends JPanel {
 		this.numEdges = numEdges;
 	}
 
-	private void drawLine(Point point1, Point point2, Point firstPoint, Graphics g, Boolean wireframe) {
+	private void drawLine(Point point1, Point point2, Point firstPoint,
+			Graphics g, Boolean wireframe) {
 		int x, y, erro, deltaX, deltaY;
 		erro = 0;
 		int x1 = point1.getX();
 		int x2 = point2.getX();
 		int y1 = point1.getY();
 		int y2 = point2.getY();
-		
+
 		double fullDist = point1.dist(point2);
 		x = x1;
 		y = y1;
@@ -97,12 +97,14 @@ public class Canvas extends JPanel {
 				for (int i = 1; i < Math.abs(deltaX); i++) {
 					if (erro < 0) {
 						x++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
+						drawLinePoint(point1, point2, firstPoint, g, x, y,
+								fullDist, wireframe);
 						erro += deltaY;
 					} else {
 						x++;
 						y++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
+						drawLinePoint(point1, point2, firstPoint, g, x, y,
+								fullDist, wireframe);
 						erro += deltaY - deltaX;
 					}
 				}
@@ -111,11 +113,13 @@ public class Canvas extends JPanel {
 					if (erro < 0) {
 						x++;
 						y++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
+						drawLinePoint(point1, point2, firstPoint, g, x, y,
+								fullDist, wireframe);
 						erro += deltaY - deltaX;
 					} else {
 						y++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
+						drawLinePoint(point1, point2, firstPoint, g, x, y,
+								fullDist, wireframe);
 						erro -= deltaX;
 					}
 				}
@@ -125,12 +129,14 @@ public class Canvas extends JPanel {
 				for (int i = 1; i < Math.abs(deltaX); i++) {
 					if (erro < 0) {
 						x--;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
+						drawLinePoint(point1, point2, firstPoint, g, x, y,
+								fullDist, wireframe);
 						erro += deltaY;
 					} else {
 						x--;
 						y++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
+						drawLinePoint(point1, point2, firstPoint, g, x, y,
+								fullDist, wireframe);
 						erro += deltaY + deltaX;
 					}
 				}
@@ -139,11 +145,13 @@ public class Canvas extends JPanel {
 					if (erro < 0) {
 						x--;
 						y++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
+						drawLinePoint(point1, point2, firstPoint, g, x, y,
+								fullDist, wireframe);
 						erro += deltaY + deltaX;
 					} else {
 						y++;
-						drawLinePoint(point1, point2, firstPoint, g, x, y, fullDist, wireframe);
+						drawLinePoint(point1, point2, firstPoint, g, x, y,
+								fullDist, wireframe);
 						erro += deltaX;
 					}
 				}
@@ -151,28 +159,36 @@ public class Canvas extends JPanel {
 		}
 	}
 
-	private void drawLinePoint(Point point1, Point point2, Point firstPoint, Graphics g, int x, int y, double fullDist, Boolean wireframe) {
-		if (wireframe && !this.wireframe.shouldDraw()) return;
-		
+	private void drawLinePoint(Point point1, Point point2, Point firstPoint,
+			Graphics g, int x, int y, double fullDist, Boolean wireframe) {
+		if (wireframe && !this.wireframe.shouldDraw())
+			return;
+
 		double dist;
 		double percent_color2;
 		dist = point1.dist(new Point(x, y, null));
-		percent_color2 = dist/fullDist;
-		
-		float red = new Float((point1.getColor().getRed()*(1-percent_color2)+point2.getColor().getRed()*percent_color2)/255);
-		float green = new Float((point1.getColor().getGreen()*(1-percent_color2)+point2.getColor().getGreen()*percent_color2)/255);
-		float blue = new Float((point1.getColor().getBlue()*(1-percent_color2)+point2.getColor().getBlue()*percent_color2)/255);
+		percent_color2 = dist / fullDist;
+
+		float red = new Float((point1.getColor().getRed()
+				* (1 - percent_color2) + point2.getColor().getRed()
+				* percent_color2) / 255);
+		float green = new Float((point1.getColor().getGreen()
+				* (1 - percent_color2) + point2.getColor().getGreen()
+				* percent_color2) / 255);
+		float blue = new Float((point1.getColor().getBlue()
+				* (1 - percent_color2) + point2.getColor().getBlue()
+				* percent_color2) / 255);
 		Color color = new Color(red, green, blue);
-		Point point = new Point(x, y, color);		
+		Point point = new Point(x, y, color);
 		if (wireframe) {
 			g.setColor(Color.BLACK);
-		}else{
+		} else {
 			g.setColor(point.getColor());
-		}		
-		
+		}
+
 		g.drawRect(x, y, 1, 1);
-		
-		if (!wireframe && !point1.equals(firstPoint)) {			
+
+		if (!wireframe && !point1.equals(firstPoint)) {
 			drawLine(firstPoint, point, firstPoint, g, false);
 		}
 	}
@@ -204,12 +220,64 @@ public class Canvas extends JPanel {
 	public void setWireframe(Wireframe wireframe) {
 		this.wireframe = wireframe;
 	}
-	
+
 	public Boolean isRasterizationEnable() {
 		return rasterizationEnable;
 	}
 
 	public void setRasterizationEnable(Boolean rasterization) {
 		this.rasterizationEnable = rasterization;
+	}
+
+	public void rotation(Double degree) {
+		Double rads = degree*Math.PI/180;
+		Double cosB = Math.cos(rads);
+		Double senB = Math.sin(rads);
+		int x, y;
+		Integer x1 = null, y1 = null;
+		for (Point point : getPoints()) {
+			if (x1 == null || y1 == null) {
+				x1 = point.getX();
+				y1 = point.getY();
+			}
+			x = point.getX() - x1;
+			y = point.getY() - y1;
+			
+			point.setX(Math.round(new Float(x*cosB - y*senB)) + x1);
+			point.setY(Math.round(new Float(y*cosB + x*senB)) + y1);
+		}
+		repaint();
+	}
+
+	public void transalteX(Integer x) {		
+		for (Point point : getPoints()) {			
+			point.setX(point.getX() + x);
+		}
+		repaint();
+	}
+	
+	public void transalteY(Integer y) {		
+		for (Point point : getPoints()) {			
+			point.setY(point.getY() + y);
+		}
+		repaint();
+	}
+
+	public void scale(Integer scale) {
+		int x, y;
+		Integer x1 = null, y1 = null;
+		for (Point point : getPoints()) {
+			
+			if (x1 == null || y1 == null) {
+				x1 = point.getX();
+				y1 = point.getY();
+			}
+			x = point.getX() - x1;
+			y = point.getY() - y1;
+			
+			point.setX(x*scale + x1);
+			point.setY(y*scale + y1);
+		}
+		repaint();
 	}
 }
