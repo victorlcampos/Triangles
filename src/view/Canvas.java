@@ -4,9 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import model.Point;
@@ -21,6 +25,8 @@ public class Canvas extends JPanel {
 	private Boolean wireframeEnable = false;
 	private Boolean rasterizationEnable = true;
 	private Integer numEdges = 3;
+	private BufferedImage texture;
+	private boolean textureEnable = false;
 
 	public Canvas() {
 		color = Color.black;
@@ -163,23 +169,30 @@ public class Canvas extends JPanel {
 			Graphics g, int x, int y, double fullDist, Boolean wireframe) {
 		if (wireframe && !this.wireframe.shouldDraw())
 			return;
+		Point point = null;
+		if (textureEnable && x > 0 && y > 0) {
+			Color color = new Color(texture.getRGB(x%texture.getWidth(), y%texture.getHeight()));
+			point = new Point(x, y, color);
+		}else{
+			double dist;
+			double percent_color2;
+			dist = point1.dist(new Point(x, y, null));
+			percent_color2 = dist / fullDist;
 
-		double dist;
-		double percent_color2;
-		dist = point1.dist(new Point(x, y, null));
-		percent_color2 = dist / fullDist;
+			float red = new Float((point1.getColor().getRed()
+					* (1 - percent_color2) + point2.getColor().getRed()
+					* percent_color2) / 255);
+			float green = new Float((point1.getColor().getGreen()
+					* (1 - percent_color2) + point2.getColor().getGreen()
+					* percent_color2) / 255);
+			float blue = new Float((point1.getColor().getBlue()
+					* (1 - percent_color2) + point2.getColor().getBlue()
+					* percent_color2) / 255);
+			Color color = new Color(red, green, blue);
+			point = new Point(x, y, color);
+		}
 
-		float red = new Float((point1.getColor().getRed()
-				* (1 - percent_color2) + point2.getColor().getRed()
-				* percent_color2) / 255);
-		float green = new Float((point1.getColor().getGreen()
-				* (1 - percent_color2) + point2.getColor().getGreen()
-				* percent_color2) / 255);
-		float blue = new Float((point1.getColor().getBlue()
-				* (1 - percent_color2) + point2.getColor().getBlue()
-				* percent_color2) / 255);
-		Color color = new Color(red, green, blue);
-		Point point = new Point(x, y, color);
+		
 		if (wireframe) {
 			g.setColor(Color.BLACK);
 		} else {
@@ -279,5 +292,28 @@ public class Canvas extends JPanel {
 			point.setY(y*scale + y1);
 		}
 		repaint();
+	}
+
+	public void saveImage() {
+
+		BufferedImage image = new BufferedImage(this.getSize().width, this.getSize().height,BufferedImage.TYPE_INT_RGB);
+		this.paint(image.createGraphics());  
+		try {
+		    File outputfile = new File("saved.png");
+		    ImageIO.write(image, "png", outputfile);
+		} catch (IOException e) {
+		}
+	}
+
+	public void setTexture(File selectedFile) {
+		try {
+			texture = ImageIO.read(selectedFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void setTextureEnable(boolean selected) {
+		textureEnable = selected;
 	}
 }

@@ -43,6 +43,7 @@ public class Window {
 	private static JTextField tfTranslateX;
 	private static JTextField tfTranslateY;
 	private static JTextField tfScale;
+	private static JTextField tfTexture;
 
 	/**
 	 * Launch the application.
@@ -66,7 +67,7 @@ public class Window {
 	private static void initialize() {
 		mainFrame = new JFrame();
 		mainFrame.setTitle("UFRJ - IM/DCC - CG - 2012.2 - Victor Campos & Thales Pires");
-		mainFrame.setBounds(100, 100, 607, 498);
+		mainFrame.setBounds(100, 100, 655, 572);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{593, 0};
@@ -179,7 +180,7 @@ public class Window {
 		panel_2.add(tfTranslateY);
 		tfTranslateY.setColumns(10);
 		
-		JButton btnRotacionar = new JButton("Rotacionar");
+		JButton btnRotacionar = new JButton("Rotacionar Imagem");
 		btnRotacionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				canvas.rotation(new Double(tfRotation.getText()));
@@ -205,11 +206,40 @@ public class Window {
 		panel_2.add(tfScale);
 		tfScale.setColumns(10);
 		
+		JButton btnNewButton = new JButton("Carregar Textura");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				int returnVal = fc.showOpenDialog(canvas);
+
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		        	File file = fc.getSelectedFile();
+		            canvas.setTexture(file);
+		            tfTexture.setText(file.getAbsolutePath());
+		        } else {
+		        }
+			}
+		});
+		panel_2.add(btnNewButton);
+		
+		tfTexture = new JTextField();
+		tfTexture.setEditable(false);
+		panel_2.add(tfTexture);
+		tfTexture.setColumns(10);
+		
+		JButton btnSalvarImagem = new JButton("Salvar Imagem");
+		btnSalvarImagem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				canvas.saveImage();
+			}
+		});
+		panel_2.add(btnSalvarImagem);
+		
 		JPanel panel_1 = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
 		flowLayout.setHgap(10);
 		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
-		gbc_panel_1.anchor = GridBagConstraints.NORTH;
+		gbc_panel_1.anchor = GridBagConstraints.SOUTH;
 		gbc_panel_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panel_1.insets = new Insets(0, 0, 5, 0);
 		gbc_panel_1.gridx = 0;
@@ -232,6 +262,17 @@ public class Window {
 		JComboBox cboxWireframe = new JComboBox();
 		panel_1.add(cboxWireframe);
 		cboxWireframe.setModel(new DefaultComboBoxModel(new String[] {"Nenhum Wireframe", "Wireframe 1", "Wireframe 2", "Wireframe 3", "Wireframe 4"}));
+		
+		final JCheckBox chckbxTextura = new JCheckBox("Textura");
+		
+		chckbxTextura.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent event) {
+				canvas.setTextureEnable(chckbxTextura.isSelected());
+				canvas.repaint();
+			}
+		});
+		
+		panel_1.add(chckbxTextura);
 		cboxWireframe.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
