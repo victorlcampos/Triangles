@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -21,6 +22,7 @@ public class Canvas extends JPanel {
 	private Boolean wireframeEnable = false;
 	private Boolean rasterizationEnable = true;
 	private Integer numEdges = 3;
+	private Color[][] colorMatrix;
 
 	public Canvas() {
 		color = Color.black;
@@ -163,6 +165,13 @@ public class Canvas extends JPanel {
 			Graphics g, int x, int y, double fullDist, Boolean wireframe) {
 		if (wireframe && !this.wireframe.shouldDraw())
 			return;
+		
+		Component component = this.getComponentAt(x, y);
+		int width = component.getWidth();
+		int height = component.getHeight();
+		if (this.colorMatrix == null || this.colorMatrix.length != width || this.colorMatrix[0].length != height) {
+			this.colorMatrix = new Color[width][height];
+		}
 
 		double dist;
 		double percent_color2;
@@ -183,7 +192,16 @@ public class Canvas extends JPanel {
 		if (wireframe) {
 			g.setColor(Color.BLACK);
 		} else {
-			g.setColor(point.getColor());
+			Color matrixColor = this.colorMatrix[x][y];
+			if (matrixColor == null) {
+				matrixColor = color;
+			}
+			int blendedRed = (color.getRed() + matrixColor.getRed()) / 2;
+			int blendedGreen = (color.getGreen() + matrixColor.getGreen()) / 2;
+			int blendedBlue = (color.getBlue() + matrixColor.getBlue()) / 2;
+			Color blendedColor = new Color(blendedRed, blendedGreen, blendedBlue);
+			this.colorMatrix[x][y] = blendedColor;
+			g.setColor(blendedColor);
 		}
 
 		g.drawRect(x, y, 1, 1);
