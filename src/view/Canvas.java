@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
 import model.Point;
@@ -296,12 +297,16 @@ public class Canvas extends JPanel {
 
 	public void saveImage() {
 
-		BufferedImage image = new BufferedImage(this.getSize().width, this.getSize().height,BufferedImage.TYPE_INT_RGB);
+		BufferedImage image = new BufferedImage(this.getSize().width, this.getSize().height, BufferedImage.TYPE_INT_RGB);
 		this.paint(image.createGraphics());  
 		try {
-		    File outputfile = new File("saved.png");
-		    ImageIO.write(image, "png", outputfile);
+			JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));  
+			if ( JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(this) ) {
+				File outputfile = fileChooser.getSelectedFile();
+				ImageIO.write(image, "png", outputfile);
+			}
 		} catch (IOException e) {
+			System.out.println(e);
 		}
 	}
 

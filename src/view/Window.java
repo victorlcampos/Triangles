@@ -67,13 +67,13 @@ public class Window {
 	private static void initialize() {
 		mainFrame = new JFrame();
 		mainFrame.setTitle("UFRJ - IM/DCC - CG - 2012.2 - Victor Campos & Thales Pires");
-		mainFrame.setBounds(100, 100, 655, 572);
+		mainFrame.setBounds(100, 100, 800, 600);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{593, 0};
-		gridBagLayout.rowHeights = new int[]{35, 0, 29, 148, 0};
+		gridBagLayout.rowHeights = new int[]{35, 0, 0, 29, 148, 0, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 0.0, 2.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 2.0, 0.0, Double.MIN_VALUE};
 		mainFrame.getContentPane().setLayout(gridBagLayout);
 		
 		JPanel panel = new JPanel();
@@ -91,8 +91,7 @@ public class Window {
 		btnLoadFile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
-				String defaultDir = Window.class.getResource("Window.class").getFile();
-                JFileChooser fileChooser = new JFileChooser(defaultDir);
+                JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
                 fileChooser.setFileFilter(new FileFilter() {
                     @Override
                     public String getDescription() {
@@ -126,18 +125,6 @@ public class Window {
 				canvas.repaint();
 			}
 		});
-		
-		JButton btnSalvarArquivo = new JButton("Salvar Arquivo");
-		btnSalvarArquivo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					GlobalController.getInstance().saveMeshInFile();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		panel.add(btnSalvarArquivo);
 		panel.add(btnLimparCanvas);
 		panel.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{btnSelecionarCor, btnLoadFile, btnLimparCanvas}));
 		btnSelecionarCor.addActionListener(new ActionListener() {
@@ -165,7 +152,7 @@ public class Window {
 		tfTranslateX = new JTextField();
 		tfTranslateX.setText("10");
 		panel_2.add(tfTranslateX);
-		tfTranslateX.setColumns(10);
+		tfTranslateX.setColumns(5);
 		
 		JButton btnTransladarY = new JButton("Transladar Y");
 		btnTransladarY.addActionListener(new ActionListener() {
@@ -178,9 +165,9 @@ public class Window {
 		tfTranslateY = new JTextField();
 		tfTranslateY.setText("10");
 		panel_2.add(tfTranslateY);
-		tfTranslateY.setColumns(10);
+		tfTranslateY.setColumns(5);
 		
-		JButton btnRotacionar = new JButton("Rotacionar Imagem");
+		JButton btnRotacionar = new JButton("Rotacionar");
 		btnRotacionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				canvas.rotation(new Double(tfRotation.getText()));
@@ -191,9 +178,9 @@ public class Window {
 		tfRotation = new JTextField();
 		tfRotation.setText("90\n");
 		panel_2.add(tfRotation);
-		tfRotation.setColumns(10);
+		tfRotation.setColumns(5);
 		
-		JButton btnEscala = new JButton("Escala");
+		JButton btnEscala = new JButton("Escalar");
 		btnEscala.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				canvas.scale(new Integer(tfScale.getText()));
@@ -204,9 +191,26 @@ public class Window {
 		tfScale = new JTextField();
 		tfScale.setText("2");
 		panel_2.add(tfScale);
-		tfScale.setColumns(10);
+		tfScale.setColumns(5);
+		
+		JPanel panel_4 = new JPanel();
+		GridBagConstraints gbc_panel_4 = new GridBagConstraints();
+		gbc_panel_4.insets = new Insets(0, 0, 5, 0);
+		gbc_panel_4.fill = GridBagConstraints.HORIZONTAL;
+		gbc_panel_4.gridx = 0;
+		gbc_panel_4.gridy = 2;
+		mainFrame.getContentPane().add(panel_4, gbc_panel_4);
+		
+		final JCheckBox chckbxTextura = new JCheckBox("Textura");
+		panel_4.add(chckbxTextura);
 		
 		JButton btnNewButton = new JButton("Carregar Textura");
+		panel_4.add(btnNewButton);
+		
+		tfTexture = new JTextField();
+		panel_4.add(tfTexture);
+		tfTexture.setEditable(false);
+		tfTexture.setColumns(10);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
@@ -220,20 +224,14 @@ public class Window {
 		        }
 			}
 		});
-		panel_2.add(btnNewButton);
+		panel_4.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{chckbxTextura}));
 		
-		tfTexture = new JTextField();
-		tfTexture.setEditable(false);
-		panel_2.add(tfTexture);
-		tfTexture.setColumns(10);
-		
-		JButton btnSalvarImagem = new JButton("Salvar Imagem");
-		btnSalvarImagem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				canvas.saveImage();
+		chckbxTextura.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent event) {
+				canvas.setTextureEnable(chckbxTextura.isSelected());
+				canvas.repaint();
 			}
 		});
-		panel_2.add(btnSalvarImagem);
 		
 		JPanel panel_1 = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
@@ -243,7 +241,7 @@ public class Window {
 		gbc_panel_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panel_1.insets = new Insets(0, 0, 5, 0);
 		gbc_panel_1.gridx = 0;
-		gbc_panel_1.gridy = 2;
+		gbc_panel_1.gridy = 3;
 		mainFrame.getContentPane().add(panel_1, gbc_panel_1);
 		
 		JLabel lblNewLabel = new JLabel("#Vértices:");
@@ -262,17 +260,6 @@ public class Window {
 		JComboBox cboxWireframe = new JComboBox();
 		panel_1.add(cboxWireframe);
 		cboxWireframe.setModel(new DefaultComboBoxModel(new String[] {"Nenhum Wireframe", "Wireframe 1", "Wireframe 2", "Wireframe 3", "Wireframe 4"}));
-		
-		final JCheckBox chckbxTextura = new JCheckBox("Textura");
-		
-		chckbxTextura.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent event) {
-				canvas.setTextureEnable(chckbxTextura.isSelected());
-				canvas.repaint();
-			}
-		});
-		
-		panel_1.add(chckbxTextura);
 		cboxWireframe.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -320,10 +307,38 @@ public class Window {
 		canvas.setBackground(Color.WHITE);
 		canvas.setLayout(null);
 		GridBagConstraints gbc_canvas = new GridBagConstraints();
+		gbc_canvas.insets = new Insets(0, 0, 5, 0);
 		gbc_canvas.fill = GridBagConstraints.BOTH;
 		gbc_canvas.gridx = 0;
-		gbc_canvas.gridy = 3;
+		gbc_canvas.gridy = 4;
 		mainFrame.getContentPane().add(canvas, gbc_canvas);
+		
+		JPanel panel_3 = new JPanel();
+		GridBagConstraints gbc_panel_3 = new GridBagConstraints();
+		gbc_panel_3.fill = GridBagConstraints.BOTH;
+		gbc_panel_3.gridx = 0;
+		gbc_panel_3.gridy = 5;
+		mainFrame.getContentPane().add(panel_3, gbc_panel_3);
+		
+		JButton btnSalvarArquivo = new JButton("Salvar Arquivo");
+		panel_3.add(btnSalvarArquivo);
+		
+		JButton btnSalvarImagem = new JButton("Capturar Imagem");
+		panel_3.add(btnSalvarImagem);
+		btnSalvarImagem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				canvas.saveImage();
+			}
+		});
+		btnSalvarArquivo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					GlobalController.getInstance().saveMeshInFile();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 	
 	public static void clearCanvas() {

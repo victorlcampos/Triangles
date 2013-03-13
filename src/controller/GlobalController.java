@@ -3,8 +3,12 @@ package controller;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 
 import model.Point;
 import view.Window;
@@ -51,11 +55,16 @@ public class GlobalController {
 	}
 	
 	public void saveMeshInFile() throws Exception {
-		BufferedWriter writter = new BufferedWriter(new FileWriter("mesh.txt"));		
-		for (Point point : Window.canvas.getPoints()) {
-			writter.write(point.getX()+" "+point.getY()+" "+point.getColor().getRGB()+"\n");
+		JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));  
+		if (JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(Window.canvas) ) {
+			File outputfile = fileChooser.getSelectedFile();
+			BufferedWriter writter = new BufferedWriter(new FileWriter(outputfile));		
+			for (Point point : Window.canvas.getPoints()) {
+				writter.write(point.getX()+" "+point.getY()+" "+point.getColor().getRGB()+"\n");
+			}
+			writter.close();
 		}
-		writter.close();
+		
 	}
 	
 }
